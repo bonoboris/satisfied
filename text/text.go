@@ -221,6 +221,7 @@ type Area struct {
 // It works best with a monospaced font.
 func NewArea(bounds rl.Rectangle, text string, opts AreaOptions) Area {
 	// ensure at least 1 line
+	log.Debug("text.NewArea", "bounds", bounds, "text", text, "opts", opts)
 	bounds.Height = max(bounds.Height, opts.Size+opts.LineSpacing+2*areaPadding)
 	a := Area{bounds: bounds, text: text, opts: opts}
 	a.recomputeLines()
@@ -237,6 +238,7 @@ func (a *Area) Text() string { return a.text }
 // SetFocused sets the focused state of the area
 func (a *Area) SetFocused(focused bool) {
 	if a.focused != focused {
+		log.Debug("text.Area.SetFocused", "newValue", focused)
 		a.focused = focused
 		a.recomputeLines()
 		a.ensureCursorInView()
@@ -246,6 +248,7 @@ func (a *Area) SetFocused(focused bool) {
 // SetText sets the text in the area
 func (a *Area) SetText(text string) {
 	if a.text != text {
+		log.Debug("text.Area.SetText", "newValue", text)
 		a.text = text
 		a.recomputeLines()
 		a.cursor = 0
@@ -259,6 +262,7 @@ func (a *Area) SetBounds(bounds rl.Rectangle) {
 	bounds.Height = max(bounds.Height, a.opts.Size+a.opts.LineSpacing+2*areaPadding)
 
 	if a.bounds != bounds {
+		log.Debug("text.Area.SetBounds", "newValue", bounds)
 		a.bounds = bounds
 		a.recomputeLines()
 		a.ensureCursorInView()

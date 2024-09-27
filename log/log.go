@@ -2,6 +2,7 @@ package log
 
 import (
 	"context"
+	"io"
 	"log/slog"
 	"os"
 	"runtime"
@@ -20,26 +21,49 @@ const (
 	FatalLevel
 )
 
-var level slog.Level
+type Options struct {
+	// Terminal (stderr) log level (All log by default)
+	Level slog.Level
+	// Log to file (empty string to disable)
+	FileWriter io.Writer
+	// Log file level (All log by default)
+	FileLevel slog.Level
+	// Whether to colorize log output in terminal
+	Colored bool
+}
+
+var (
+	termHandler *handler
+	fileHandler *handler
+	minLevel    slog.Level
+)
 
 // Initializes logging
-func Init(lvl slog.Level, colored bool) {
-	level = lvl
-	slog.SetLogLoggerLevel(lvl)
-	rl.SetTraceLogLevel(rl.TraceLogLevel(lvl))
+func Init(opts Options) {
+	minLevel = min(opts.Level, opts.FileLevel)
+	slog.SetLogLoggerLevel(opts.Level)
+	rl.SetTraceLogLevel(rl.TraceLogLevel(opts.Level))
 	rl.SetTraceLogCallback(func(l int, message string) { Log(slog.Level(l), message, "source", "raylib") })
-	var handler slog.Handler
-	if colored {
-		handler = NewHandler(os.Stderr, lvl)
-	} else {
-		handler = slog.NewJSONHandler(os.Stderr, nil)
+	termHandler = NewHandler(os.Stderr, opts.Level, opts.Colored)
+	termHandler.Start()
+	if opts.FileWriter != nil {
+		fileHandler = NewHandler(opts.FileWriter, opts.FileLevel, false)
+		fileHandler.Start()
 	}
-	logger := slog.New(handler)
-	slog.SetDefault(logger)
+}
+
+// Close stops the log handling goroutines
+func Close() {
+	if termHandler != nil {
+		termHandler.Stop()
+	}
+	if fileHandler != nil {
+		fileHandler.Stop()
+	}
 }
 
 // WillTrace returns true if [TraceLevel] logs will be written
-func WillTrace() bool { return level <= TraceLevel }
+func WillTrace() bool { return minLevel <= TraceLevel }
 
 // Log at [TraceLevel]
 func Trace(msg string, args ...any) { log(TraceLevel, msg, args...) }
@@ -69,10 +93,7 @@ func Log(level slog.Level, msg string, args ...any) {
 // It must always be called directly by an exported logging method
 // or function, because it uses a fixed call depth to obtain the pc.
 func log(lvl slog.Level, msg string, args ...any) {
-	l := slog.Default()
-	ctx := context.Background()
-
-	if !l.Enabled(ctx, lvl) {
+	if lvl < minLevel {
 		return
 	}
 	var pcs [1]uintptr
@@ -81,5 +102,11 @@ func log(lvl slog.Level, msg string, args ...any) {
 	pc := pcs[0]
 	r := slog.NewRecord(time.Now(), lvl, msg, pc)
 	r.Add(args...)
-	_ = l.Handler().Handle(ctx, r)
+	ctx := context.Background()
+	if termHandler.Enabled(ctx, lvl) {
+		termHandler.Handle(ctx, r)
+	}
+	if fileHandler != nil && fileHandler.Enabled(ctx, lvl) {
+		fileHandler.Handle(ctx, r)
+	}
 }

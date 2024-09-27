@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	textBoxFontSize    = 24.    // text font size in pixels
-	textBoxLineSpacing = -5.    // text line spacing in pixels
+	textBoxLineSpacing = 0.     // text line spacing in pixels
+	textBoxPadding     = 3.     // text box padding in pixels
 	textBoxMinSize     = 1      // minimum size of a text box in world units
 	textBoxHandleSize  = 20     // size of the grab handle in pixels
 	textBoxDefaultText = "Text" // default text box content
@@ -62,13 +62,18 @@ func (tb *TextBox) Draw(state DrawState, drawHandle bool) {
 		rl.DrawLineEx(bl, tr, 1*px, colors.Gray500)
 		rl.DrawLineEx(mb, mr, 1*px, colors.Gray500)
 	}
+	px := 1 / camera.Zoom()
 	textOpts := text.Options{
 		Font:          font,
-		Size:          24 / camera.Zoom(),
+		Size:          float32(settings.FontSize) * px,
 		Color:         colors.Gray700,
-		Align:         text.AlignMiddle,
-		VerticalAlign: text.AlignMiddle,
-		LineSpacing:   textBoxLineSpacing,
+		Align:         text.AlignStart,
+		VerticalAlign: text.AlignStart,
+		Wrap:          text.WrapChar,
+		LineSpacing:   textBoxLineSpacing * px,
 	}
-	text.DrawText(tb.Bounds, tb.Content, textOpts)
+	bounds := rl.NewRectangleV(
+		tb.Bounds.TopLeft().AddValue(textBoxPadding*px),
+		tb.Bounds.Size().SubtractValue(2*textBoxPadding*px))
+	text.DrawText(bounds, tb.Content, textOpts)
 }

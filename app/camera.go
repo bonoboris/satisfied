@@ -14,11 +14,11 @@ const (
 	// Zoom default level (px/wu) wu=world unit
 	zoomDefault = 10.
 	// Factor to zoom by
-	zoomFactor = 1.5
-	// Min zoom level = zoomDefault * zoomFactor^-5 (~ x0.13 default)
-	zoomMin = zoomDefault * 32. / 243.
-	// Max zoom level = zoomDefault * zoomFactor^5 (~ x7.5 default)
-	zoomMax = zoomDefault * 243. / 32.
+	zoomFactor = 1.25
+	// Min zoom level = zoomDefault * zoomFactor^-5 (~ x0.40 default)
+	zoomMin = zoomDefault * 256. / 625.
+	// Max zoom level = zoomDefault * zoomFactor^5 (~ x2.5 default)
+	zoomMax = zoomDefault * 625. / 256.
 	// Ammount to move the camera by on arrow key press
 	moveDelta = 100.
 	// Ammount to zoom by on middle mouse button drag
@@ -43,6 +43,14 @@ func (c Camera) traceState(key, val string) {
 	} else {
 		log.Trace("camera", "zoom", c.camera.Zoom, "target", c.camera.Target, "offset", c.camera.Offset, "zooming", c.Zooming, "zoomAt", c.ZoomAt)
 	}
+}
+
+func (c *Camera) Reset() {
+	c.camera.Zoom = zoomDefault
+	c.camera.Target = vec2(0, 0)
+	c.camera.Offset = dims.Scene.Center()
+	c.Zooming = false
+	c.ZoomAt = rl.Vector2{}
 }
 
 // Zoom returns the current zoom level
@@ -120,9 +128,7 @@ func (c *Camera) Update() {
 func (c *Camera) doReset() Action {
 	c.traceState("before", "doReset")
 	log.Debug("camera.doReset")
-	c.camera.Zoom = zoomDefault
-	c.camera.Target = vec2(0, 0)
-	c.camera.Offset = dims.Scene.Center()
+	c.Reset()
 	c.traceState("after", "doReset")
 	return nil
 }
@@ -177,4 +183,15 @@ func (c *Camera) Dispatch(action Action) Action {
 	default:
 		panic(fmt.Sprintf("Camera.Dispatch: cannot handle: %T", action))
 	}
+}
+
+// Set sets the camera target; offset is set to the center of the scene area
+func (c *Camera) SetTarget(target rl.Vector2) {
+	c.camera.Target = target
+	c.camera.Offset = dims.Scene.Center()
+}
+
+// SetZoom sets the camera zoom
+func (c *Camera) SetZoom(zoom float32) {
+	c.camera.Zoom = zoom
 }

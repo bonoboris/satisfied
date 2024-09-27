@@ -477,7 +477,7 @@ func (s *Selection) doBeginTransformation(mode SelectionMode, pos rl.Vector2, mo
 			if len(s.PathIdxs) == 1 {
 				// only one path start/end selected switch to newpath mode
 				log.Debug("selection.doBeginTransformation", "action", "newpath", "mode", mode, "reason", "single path ending selected")
-				return newPath.doInit(s.PathIdxs[0].Idx)
+				return newPath.doInit(scene.Paths[s.PathIdxs[0].Idx].DefIdx)
 			} else {
 				// TODO: would be nice to have a multi newpath mode
 				// for now do nothing

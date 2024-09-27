@@ -53,7 +53,8 @@ func (g *Gui) UpdateAndDraw() (action Action) {
 
 // Reset resets GUI state
 func (g *Gui) Reset() {
-	g.Sidebar.Reset()
+	g.Sidebar.reset()
+	g.Detailsbar.reset()
 }
 
 // Whether the gui should captures key presses
@@ -93,28 +94,28 @@ func (tb *guiTopbar) updateAndDraw() (action Action) {
 	raygui.SetTooltip("New file")
 	if raygui.Button(bounds, raygui.IconText(raygui.ICON_FILE_NEW, "")) {
 		log.Debug("topbar new file clicked")
-		action = app.doNew()
+		app.newProject()
 	}
 
 	bounds.X += 50
 	raygui.SetTooltip("Open file")
 	if raygui.Button(bounds, raygui.IconText(raygui.ICON_FILE_OPEN, "")) {
 		log.Debug("topbar open file clicked")
-		action = app.doOpen()
+		app.openProject()
 	}
 
 	bounds.X += 50
 	raygui.SetTooltip("Save file (Ctrl+S)")
 	if raygui.Button(bounds, raygui.IconText(raygui.ICON_FILE_SAVE, "")) {
 		log.Debug("topbar save file clicked")
-		action = app.doSave(app.filepath)
+		app.saveProject(app.filepath)
 	}
 
 	bounds.X += 50
 	raygui.SetTooltip("Save file as...")
 	if raygui.Button(bounds, raygui.IconText(raygui.ICON_FILE_SAVE_CLASSIC, "")) {
 		log.Debug("topbar save file as clicked")
-		action = app.doSaveAs()
+		app.saveProjectAs()
 	}
 	raygui.Enable() // end file controls
 
@@ -217,10 +218,13 @@ type guiSidebar struct {
 	buildingIndices [][]int
 }
 
-// Reset resets sidebar state
+const btnHeight = 32
+
+// reset resets sidebar state
 //
 // We don't reset the active category because it's not what we usually want
-func (sb *guiSidebar) Reset() {
+func (sb *guiSidebar) reset() {
+	sb.activeTextBox = -1
 	sb.activePath = -1
 	sb.activeBuilding = -1
 }
@@ -269,7 +273,7 @@ func (sb *guiSidebar) drawLine(bounds rl.Rectangle, yOffset float32) {
 }
 
 func (sb *guiSidebar) drawTextBoxControls(bounds rl.Rectangle, yOffset float32) Action {
-	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, 40)
+	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, btnHeight)
 	newActive := raygui.ToggleGroup(bounds, "Text box", int32(sb.activeTextBox))
 	if newActive != sb.activeTextBox {
 		// newActive is guaranteed to be != -1 because ToggleGroup returns the index of the newly
@@ -288,7 +292,7 @@ func (sb *guiSidebar) drawTextBoxControls(bounds rl.Rectangle, yOffset float32) 
 }
 
 func (sb *guiSidebar) drawPathsControls(bounds rl.Rectangle, yOffset float32) Action {
-	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, (bounds.Width-10)/float32(sb.numPath), 40)
+	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width/float32(sb.numPath), btnHeight)
 	newActive := raygui.ToggleGroup(bounds, sb.pathText, int32(sb.activePath))
 	if newActive != sb.activePath {
 		// newActive is guaranteed to be != -1 because ToggleGroup returns the index of the newly
@@ -307,7 +311,7 @@ func (sb *guiSidebar) drawPathsControls(bounds rl.Rectangle, yOffset float32) Ac
 }
 
 func (sb *guiSidebar) drawCategoryControls(bounds rl.Rectangle, yOffset float32) Action {
-	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, 40)
+	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, btnHeight)
 	newActive := raygui.ToggleGroup(bounds, sb.categoryText, sb.activeCategory)
 	if newActive != sb.activeCategory {
 		// newActive is guaranteed to be != -1 because ToggleGroup returns the index of the newly
@@ -325,7 +329,7 @@ func (sb *guiSidebar) drawCategoryControls(bounds rl.Rectangle, yOffset float32)
 }
 
 func (sb *guiSidebar) drawBuildingControls(bounds rl.Rectangle, yOffset float32) Action {
-	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, 40)
+	bounds = rl.NewRectangle(bounds.X, bounds.Y+yOffset, bounds.Width, btnHeight)
 	newActive := raygui.ToggleGroup(bounds, sb.buildingTexts[sb.activeCategory], sb.activeBuilding)
 	if newActive != sb.activeBuilding {
 		// newActive is guaranteed to be != -1 because ToggleGroup returns the index of the newly
@@ -348,32 +352,31 @@ func (sb *guiSidebar) updateAndDraw() (action Action) {
 	rl.DrawRectangleRec(bar, colors.Gray100)
 	rl.DrawLineV(bar.TopRight(), bar.BottomRight(), colors.Gray300)
 
-	padding := float32(10)
-
 	pPadding := raygui.GetStyle(raygui.TOGGLE, raygui.GROUP_PADDING)
 	pTextSize := raygui.GetStyle(raygui.DEFAULT, raygui.TEXT_SIZE)
-	raygui.SetStyle(raygui.TOGGLE, raygui.GROUP_PADDING, int64(padding))
-	raygui.SetStyle(raygui.DEFAULT, raygui.TEXT_SIZE, 32)
+	raygui.SetStyle(raygui.TOGGLE, raygui.GROUP_PADDING, 0)
+	raygui.SetStyle(raygui.DEFAULT, raygui.TEXT_SIZE, 24)
 
 	// padded dimensions
 	bar = rl.NewRectangle(bar.X+20, bar.Y+20, bar.Width-40, bar.Height-40)
 
 	yOffset := float32(0)
 	action = orAction(action, sb.drawTextBoxControls(bar, yOffset))
-	yOffset += 60
+	yOffset += btnHeight + 20
 
 	action = orAction(action, sb.drawPathsControls(bar, yOffset))
-	yOffset += 60
+	yOffset += btnHeight + 20
 
 	sb.drawLine(bar, yOffset)
 	yOffset += 20
 
+	raygui.SetStyle(raygui.TOGGLE, raygui.GROUP_PADDING, 0)
 	action = orAction(action, sb.drawCategoryControls(bar, yOffset))
-	yOffset += float32(sb.numCategory) * 50
+	yOffset += float32(sb.numCategory)*btnHeight + 20
 
 	if sb.activeCategory > -1 {
 		sb.drawLine(bar, yOffset)
-		yOffset += 10
+		yOffset += 20
 
 		action = orAction(action, sb.drawBuildingControls(bar, yOffset))
 	}
@@ -394,17 +397,20 @@ func textAreaOpts() text.AreaOptions {
 
 func (db *guiDetailsbar) reset() {
 	db.areaInit = false
-	db.textarea = text.NewArea(rl.Rectangle{}, "", textAreaOpts())
 }
 
 func (db *guiDetailsbar) doUpdateTextBoxContent() Action {
-	if newText := db.textarea.Text(); newText != scene.TextBoxes[selection.TextBoxIdxs[0]].Content {
+	if newText := db.textarea.Text(); newText != db.textBoxContent() {
 		tb := scene.TextBoxes[selection.TextBoxIdxs[0]]
 		tb.Content = newText
 		db.textarea.SetFocused(false)
 		scene.ModifyObjects(selection.ObjectSelection, ObjectCollection{TextBoxes: []TextBox{tb}})
 	}
 	return nil
+}
+
+func (db *guiDetailsbar) textBoxContent() string {
+	return scene.TextBoxes[selection.TextBoxIdxs[0]].Content
 }
 
 func (db *guiDetailsbar) updateAndDraw() Action {
@@ -434,13 +440,19 @@ func (db *guiDetailsbar) updateAndDraw() Action {
 		areaBounds.Height = bar.Height - areaBounds.Y - 50
 
 		if !db.areaInit {
-			db.textarea = text.NewArea(areaBounds, scene.TextBoxes[selection.TextBoxIdxs[0]].Content, textAreaOpts())
+			db.textarea = text.NewArea(areaBounds, db.textBoxContent(), textAreaOpts())
 			db.areaInit = true
 		} else {
 			// in case of window resize
 			db.textarea.SetBounds(areaBounds)
 		}
 		db.textarea.SetDisabled(selection.mode != SelectionSingleTextBox)
+
+		// handling KeyEscape here because we want to discard changes on escape
+		if keyboard.Pressed == rl.KeyEscape {
+			db.textarea.SetText(db.textBoxContent())
+		}
+
 		db.textarea.Draw(keyboard.Pressed)
 
 		if keyboard.Pressed == rl.KeyEnter && keyboard.Ctrl {
@@ -449,12 +461,18 @@ func (db *guiDetailsbar) updateAndDraw() Action {
 		buttonBounds := bar
 		buttonBounds.Y = areaBounds.Y + areaBounds.Height + 10
 		buttonBounds.Height = 30
+		buttonBounds.Width /= 2
 		if selection.mode != SelectionSingleTextBox {
 			raygui.Disable()
 		}
+		if raygui.Button(buttonBounds, "Reset (Esc)") {
+			db.textarea.SetText(db.textBoxContent())
+		}
+		buttonBounds.X += buttonBounds.Width
 		if raygui.Button(buttonBounds, "Update (Ctrl+Enter)") {
 			action = db.doUpdateTextBoxContent()
 		}
+
 		raygui.Enable()
 	} else {
 		db.reset()

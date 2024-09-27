@@ -20,6 +20,10 @@ import (
 //go:embed assets
 var assets embed.FS
 
+// TODO: add flags for:
+//   - log filename
+//   - log file level
+//   - disable terminal colors
 var (
 	fs         *flag.FlagSet
 	verbose    *bool
@@ -55,33 +59,42 @@ func init() {
 	}
 }
 
-func parseArgs() (slog.Level, *app.AppOptions) {
+func getLogLevel() slog.Level {
+	switch {
+	case *vverbose:
+		return log.TraceLevel
+	case *verbose:
+		return log.DebugLevel
+	case *quiet:
+		return log.WarnLevel
+	default:
+		return log.InfoLevel
+	}
+}
+
+func main() {
+	// parse args
 	if err := fs.Parse(os.Args[1:]); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
-	opts := &app.AppOptions{}
-	logLevel := log.InfoLevel
-	switch {
-	case *vverbose:
-		logLevel = log.TraceLevel
-	case *verbose:
-		logLevel = log.DebugLevel
-	case *quiet:
-		logLevel = log.WarnLevel
-	default:
-		logLevel = log.InfoLevel
+	logFile, err := os.Create("satisfied.log")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
 	}
+	defer logFile.Close()
+	logOpts := log.Options{
+		Level:      getLogLevel(),
+		Colored:    true,
+		FileWriter: logFile,
+		FileLevel:  log.TraceLevel,
+	}
+	log.Init(logOpts)
+	opts := &app.AppOptions{Fps: *fps}
 	if fs.NArg() > 0 {
 		opts.File = app.NormalizePath(fs.Arg(0))
 	}
-	opts.Fps = *fps
-	return logLevel, opts
-}
-
-func main() {
-	logLevel, opts := parseArgs()
-	log.Init(logLevel, true)
 
 	app.Init(assets, opts)
 

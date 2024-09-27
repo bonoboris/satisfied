@@ -43,13 +43,6 @@ func (b Building) Bounds() rl.Rectangle {
 	return b.matrix().ApplyRec(0, 0, dims.X, dims.Y)
 }
 
-const (
-	labelFontSize    = 24.
-	labelLineSpacing = -5.
-)
-
-var labelColor = rl.Color{0, 0, 0, 127}
-
 func (b Building) DrawLabel(bounds rl.Rectangle) {
 	bounds.X += 0.5
 	bounds.Y += 0.5
@@ -58,8 +51,8 @@ func (b Building) DrawLabel(bounds rl.Rectangle) {
 	zoom := camera.Zoom()
 	labelOpts := text.Options{
 		Font:          labelFont,
-		Size:          labelFontSize / zoom,
-		Color:         labelColor,
+		Size:          float32(settings.FontSize) / zoom,
+		Color:         colors.Gray700,
 		Align:         text.AlignMiddle,
 		VerticalAlign: text.AlignMiddle,
 	}
@@ -155,7 +148,7 @@ func (io inputOutput) drawBeltOut(mat matrix.Matrix, state DrawState) {
 
 func (io inputOutput) drawPipeIn(mat matrix.Matrix, state DrawState) {
 	mat = mat.Mult(io.matrix())
-	bounds := rl.NewRectangle(-0.5, -1, 1, 0.5)
+	bounds := rl.NewRectangle(-0.5, -0.5, 1, 0.5)
 	rl.DrawRectangleRec(mat.ApplyRecRec(bounds), state.transformColor(colors.Orange500))
 	c := state.transformColor(colors.Black)
 	io.drawTri(mat, 0, -0.25, c)
@@ -169,7 +162,7 @@ func (io inputOutput) drawPipeOut(mat matrix.Matrix, state DrawState) {
 	io.drawTri(mat, 0, 0.25, c)
 }
 
-const MAX_INOUT = 4
+const MAX_INOUT = 6
 
 type inputOutputs struct {
 	arr [MAX_INOUT]inputOutput

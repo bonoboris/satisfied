@@ -39,7 +39,7 @@ func (g Grid) Draw() {
 			for y := y0; y < e.Y; y += 2 {
 				v := vec2(x, y)
 				rl.DrawLineEx(v.Add(vec2(0, -0.25)), v.Add(vec2(0, 0.25)), px, colors.Gray300)
-				rl.DrawLineEx(v.Add(vec2(-0.25, 0)), v.Add(vec2(-0.25, 0)), px, colors.Gray300)
+				rl.DrawLineEx(v.Add(vec2(-0.25, 0)), v.Add(vec2(0.25, 0)), px, colors.Gray300)
 			}
 		}
 	}
@@ -61,19 +61,19 @@ func (g Grid) Draw() {
 	y0 := math32.Ceil(s.Y/8) * 8
 	// 8x8 lines (foundation size)
 	for x := x0; x < e.X; x += 8 {
-		rl.DrawLineEx(vec2(x, s.Y), vec2(x, e.Y), 2.*px, colors.Gray300)
+		rl.DrawLineEx(vec2(x, s.Y), vec2(x, e.Y), 1.*px, colors.Gray500)
 	}
 
 	for y := y0; y < e.Y; y += 8 {
-		rl.DrawLineEx(vec2(s.X, y), vec2(e.X, y), 2.*px, colors.Gray300)
+		rl.DrawLineEx(vec2(s.X, y), vec2(e.X, y), 1.*px, colors.Gray500)
 	}
 
 	// orgin lines
 	if s.X <= 0 && e.X >= 0 {
-		rl.DrawLineEx(vec2(0, s.Y), vec2(0, e.Y), 2.*px, colors.Gray700)
+		rl.DrawLineEx(vec2(0, s.Y), vec2(0, e.Y), 2.*px, colors.Blue500)
 	}
 	if s.Y <= 0 && e.Y >= 0 {
-		rl.DrawLineEx(vec2(s.X, 0), vec2(e.X, 0), 2.*px, colors.Gray700)
+		rl.DrawLineEx(vec2(s.X, 0), vec2(e.X, 0), 2.*px, colors.Blue500)
 	}
 
 	// mouse lines
@@ -103,11 +103,21 @@ func (g Grid) Draw() {
 
 	fontSize := 16 * px
 	for x := x0; x < e.X; x += step {
-		t := strconv.FormatFloat(float64(x), 'f', 0, 32)
-		rl.DrawTextEx(font, t, vec2(x+off, s.Y+off), fontSize, 0, colors.Gray700)
+		var txt string
+		if settings.TickFoundation {
+			txt = strconv.FormatFloat(float64(x/8), 'f', 0, 32)
+		} else {
+			txt = strconv.FormatFloat(float64(x), 'f', 0, 32)
+		}
+		rl.DrawTextEx(font, txt, vec2(x+off, s.Y+off), fontSize, 0, colors.Gray700)
 	}
 	for y := y0; y < e.Y; y += step {
-		t := strconv.FormatFloat(float64(y), 'f', 0, 32)
-		rl.DrawTextEx(font, t, vec2(s.X+off, y+off), fontSize, 0, colors.Gray700)
+		var txt string
+		if settings.TickFoundation {
+			txt = strconv.FormatFloat(float64(y/8), 'f', 0, 32)
+		} else {
+			txt = strconv.FormatFloat(float64(y), 'f', 0, 32)
+		}
+		rl.DrawTextEx(font, txt, vec2(s.X+off, y+off), fontSize, 0, colors.Gray700)
 	}
 }

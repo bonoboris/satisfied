@@ -3,3 +3,5 @@ bin
 *.exe
 *.prof
 resource.syso
+*.log
+*.cache

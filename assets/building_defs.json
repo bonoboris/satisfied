@@ -1,52 +1,5 @@
 [
   {
-    "Class": "Assembler",
-    "Category": "Production",
-    "Dims": { "X": 10, "Y": 15 },
-    "BeltIn": [{ "Pos": { "X": 3, "Y": 15 } }, { "Pos": { "X": 7, "Y": 15 } }],
-    "BeltOut": [{ "Pos": { "X": 5, "Y": 0 } }]
-  },
-  {
-    "Class": "AWESOME Shop",
-    "Category": "Special",
-    "Dims": { "X": 4, "Y": 6 }
-  },
-  {
-    "Class": "AWESOME Sink",
-    "Category": "Special",
-    "Dims": { "X": 16, "Y": 13 },
-    "BeltIn": [{ "Pos": { "X": 10, "Y": 13 } }]
-  },
-  {
-    "Class": "Biomass Burner",
-    "Category": "Power",
-    "Dims": { "X": 8, "Y": 8 }
-  },
-  {
-    "Class": "Blender",
-    "Category": "Production",
-    "Dims": { "X": 18, "Y": 16 },
-    "BeltIn": [
-      { "Pos": { "X": 11, "Y": 16 } },
-      { "Pos": { "X": 15, "Y": 16 } }
-    ],
-    "BeltOut": [{ "Pos": { "X": 7, "Y": 0 } }],
-    "PipeIn": [{ "Pos": { "X": 3, "Y": 16 } }, { "Pos": { "X": 7, "Y": 16 } }],
-    "PipeOut": [{ "Pos": { "X": 3, "Y": 0 } }]
-  },
-  {
-    "Class": "Blueprint Designer",
-    "Category": "Special",
-    "Dims": { "X": 40, "Y": 40 }
-  },
-  {
-    "Class": "Coal Generator",
-    "Category": "Power",
-    "Dims": { "X": 10, "Y": 26 },
-    "BeltIn": [{ "Pos": { "X": 3, "Y": 26 } }],
-    "PipeIn": [{ "Pos": { "X": 7, "Y": 26 } }]
-  },
-  {
     "Class": "Constructor",
     "Category": "Production",
     "Dims": { "X": 8, "Y": 10 },
@@ -54,11 +7,11 @@
     "BeltOut": [{ "Pos": { "X": 4, "Y": 0 } }]
   },
   {
-    "Class": "Foundry",
+    "Class": "Assembler",
     "Category": "Production",
-    "Dims": { "X": 10, "Y": 9 },
-    "BeltIn": [{ "Pos": { "X": 4, "Y": 9 } }, { "Pos": { "X": 8, "Y": 9 } }],
-    "BeltOut": [{ "Pos": { "X": 4, "Y": 0 } }]
+    "Dims": { "X": 10, "Y": 15 },
+    "BeltIn": [{ "Pos": { "X": 3, "Y": 15 } }, { "Pos": { "X": 7, "Y": 15 } }],
+    "BeltOut": [{ "Pos": { "X": 5, "Y": 0 } }]
   },
   {
     "Class": "Manufacturer",
@@ -73,37 +26,34 @@
     "BeltOut": [{ "Pos": { "X": 9, "Y": 0 } }]
   },
   {
-    "Class": "Miner Mk.1",
+    "Class": "Refinery",
     "Category": "Production",
-    "Dims": { "X": 6, "Y": 14 },
-    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
-  },
-  {
-    "Class": "Miner Mk.2",
-    "Category": "Production",
-    "Dims": { "X": 6, "Y": 14 },
-    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
-  },
-  {
-    "Class": "Miner Mk.3",
-    "Category": "Production",
-    "Dims": { "X": 6, "Y": 14 },
-    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
-  },
-  {
-    "Class": "Oil Extractor",
-    "Category": "Production",
-    "Dims": { "X": 8, "Y": 13 },
-    "PipeOut": [{ "Pos": { "X": 4, "Y": 0 } }]
+    "Dims": { "X": 10, "Y": 20 },
+    "BeltIn": [{ "Pos": { "X": 7, "Y": 20 } }],
+    "PipeIn": [{ "Pos": { "X": 3, "Y": 20 } }],
+    "BeltOut": [{ "Pos": { "X": 7, "Y": 0 } }],
+    "PipeOut": [{ "Pos": { "X": 3, "Y": 0 } }]
   },
   {
     "Class": "Packager",
     "Category": "Production",
     "Dims": { "X": 8, "Y": 8 },
     "BeltIn": [{ "Pos": { "X": 4, "Y": 8 } }],
-    "BeltOut": [{ "Pos": { "X": 4, "Y": 0 } }],
     "PipeIn": [{ "Pos": { "X": 4, "Y": 8 } }],
+    "BeltOut": [{ "Pos": { "X": 4, "Y": 0 } }],
     "PipeOut": [{ "Pos": { "X": 4, "Y": 0 } }]
+  },
+  {
+    "Class": "Blender",
+    "Category": "Production",
+    "Dims": { "X": 18, "Y": 16 },
+    "BeltIn": [{ "Pos": { "X": 3, "Y": 16 } }, { "Pos": { "X": 7, "Y": 16 } }],
+    "PipeIn": [
+      { "Pos": { "X": 11, "Y": 16 } },
+      { "Pos": { "X": 15, "Y": 16 } }
+    ],
+    "BeltOut": [{ "Pos": { "X": 11, "Y": 0 } }],
+    "PipeOut": [{ "Pos": { "X": 15, "Y": 0 } }]
   },
   {
     "Class": "Particle Accelerator",
@@ -116,32 +66,223 @@
     "BeltOut": [{ "Pos": { "X": 33, "Y": 0 } }]
   },
   {
-    "Class": "Refinery",
+    "Class": "Converter",
     "Category": "Production",
-    "Dims": { "X": 10, "Y": 20 },
-    "BeltIn": [{ "Pos": { "X": 7, "Y": 20 } }],
-    "BeltOut": [{ "Pos": { "X": 7, "Y": 0 } }],
-    "PipeIn": [{ "Pos": { "X": 3, "Y": 20 } }],
-    "PipeOut": [{ "Pos": { "X": 3, "Y": 0 } }]
+    "Dims": { "X": 16, "Y": 16 },
+    "BeltIn": [{ "Pos": { "X": 6, "Y": 16 } }, { "Pos": { "X": 10, "Y": 16 } }],
+    "BeltOut": [{ "Pos": { "X": 10, "Y": 0 } }],
+    "PipeOut": [{ "Pos": { "X": 6, "Y": 0 } }]
   },
   {
-    "Class": "Ressource Well",
+    "Class": "Quantum Encoder",
     "Category": "Production",
-    "Dims": { "X": 4, "Y": 4 },
-    "PipeOut": [{ "Pos": { "X": 2, "Y": 0 } }]
+    "Dims": { "X": 22, "Y": 48 },
+    "BeltIn": [
+      { "Pos": { "X": 5, "Y": 44 } },
+      { "Pos": { "X": 9, "Y": 48 } },
+      { "Pos": { "X": 13, "Y": 48 } }
+    ],
+    "PipeIn": [{ "Pos": { "X": 17, "Y": 44 } }],
+    "BeltOut": [{ "Pos": { "X": 9, "Y": 0 } }],
+    "PipeOut": [{ "Pos": { "X": 13, "Y": 0 } }]
   },
   {
     "Class": "Smelter",
-    "Category": "Production",
+    "Category": "Extraction",
     "Dims": { "X": 6, "Y": 9 },
     "BeltIn": [{ "Pos": { "X": 3, "Y": 9 } }],
     "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
   },
+
+  {
+    "Class": "Foundry",
+    "Category": "Extraction",
+    "Dims": { "X": 10, "Y": 9 },
+    "BeltIn": [{ "Pos": { "X": 4, "Y": 9 } }, { "Pos": { "X": 8, "Y": 9 } }],
+    "BeltOut": [{ "Pos": { "X": 4, "Y": 0 } }]
+  },
+
+  {
+    "Class": "Miner Mk.1",
+    "Category": "Extraction",
+    "Dims": { "X": 6, "Y": 14 },
+    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
+  },
+  {
+    "Class": "Miner Mk.2",
+    "Category": "Extraction",
+    "Dims": { "X": 6, "Y": 14 },
+    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
+  },
+  {
+    "Class": "Miner Mk.3",
+    "Category": "Extraction",
+    "Dims": { "X": 6, "Y": 14 },
+    "BeltOut": [{ "Pos": { "X": 3, "Y": 0 } }]
+  },
   {
     "Class": "Water Extractor",
-    "Category": "Production",
+    "Category": "Extraction",
     "Dims": { "X": 20, "Y": 19.5 },
     "PipeOut": [{ "Pos": { "X": 10, "Y": 0 } }]
+  },
+  {
+    "Class": "Oil Extractor",
+    "Category": "Extraction",
+    "Dims": { "X": 8, "Y": 13 },
+    "PipeOut": [{ "Pos": { "X": 4, "Y": 0 } }]
+  },
+  {
+    "Class": "Resource Well Pressurizer",
+    "Category": "Extraction",
+    "Dims": { "X": 20, "Y": 23 },
+    "PipeOut": [{ "Pos": { "X": 2, "Y": 0 } }]
+  },
+  {
+    "Class": "Resource Well",
+    "Category": "Extraction",
+    "Dims": { "X": 4, "Y": 4 },
+    "PipeOut": [{ "Pos": { "X": 2, "Y": 0 } }]
+  },
+  {
+    "Class": "Biomass Burner",
+    "Category": "Power",
+    "Dims": { "X": 8, "Y": 8 }
+  },
+  {
+    "Class": "Coal Generator",
+    "Category": "Power",
+    "Dims": { "X": 10, "Y": 26 },
+    "BeltIn": [{ "Pos": { "X": 3, "Y": 26 } }],
+    "PipeIn": [{ "Pos": { "X": 7, "Y": 26 } }]
+  },
+  {
+    "Class": "Fuel Generator",
+    "Category": "Power",
+    "Dims": { "X": 20, "Y": 20 },
+    "PipeIn": [{ "Pos": { "X": 10, "Y": 20 } }]
+  },
+  {
+    "Class": "Geothermal Generator",
+    "Category": "Power",
+    "Dims": { "X": 16, "Y": 20 }
+  },
+  {
+    "Class": "Nuclear Power Plant",
+    "Category": "Power",
+    "Dims": { "X": 38, "Y": 43 },
+    "BeltIn": [{ "Pos": { "X": 16, "Y": 43 } }],
+    "PipeIn": [{ "Pos": { "X": 18, "Y": 43 } }],
+    "BeltOut": [{ "Pos": { "X": 20, "Y": 43, "Rot": 180 } }]
+  },
+  {
+    "Class": "Power Storage",
+    "Category": "Power",
+    "Dims": { "X": 6, "Y": 6 }
+  },
+  {
+    "Class": "Power Augmenter",
+    "Category": "Power",
+    "Dims": { "X": 28, "Y": 28 },
+    "BeltIn": [{ "Pos": { "X": 14, "Y": 28 } }]
+  },
+  {
+    "Class": "HUB",
+    "Category": "Special",
+    "Dims": { "X": 14, "Y": 26 }
+  },
+  {
+    "Class": "Space Elevator",
+    "Category": "Special",
+    "Dims": { "X": 54, "Y": 54 },
+    "BeltIn": [
+      { "Pos": { "X": 6, "Y": 13 }, "Rot": 90 },
+      { "Pos": { "X": 6, "Y": 16 }, "Rot": 90 },
+      { "Pos": { "X": 6, "Y": 19 }, "Rot": 90 },
+      { "Pos": { "X": 48, "Y": 13 }, "Rot": 270 },
+      { "Pos": { "X": 48, "Y": 16 }, "Rot": 270 },
+      { "Pos": { "X": 48, "Y": 19 }, "Rot": 270 }
+    ]
+  },
+  {
+    "Class": "Blueprint Designer Mk.1",
+    "Category": "Special",
+    "Dims": { "X": 42, "Y": 42 }
+  },
+  {
+    "Class": "Blueprint Designer Mk.2",
+    "Category": "Special",
+    "Dims": { "X": 50, "Y": 50 }
+  },
+  {
+    "Class": "Blueprint Designer Mk.3",
+    "Category": "Special",
+    "Dims": { "X": 58, "Y": 58 }
+  },
+  {
+    "Class": "AWESOME Shop",
+    "Category": "Special",
+    "Dims": { "X": 4, "Y": 6 }
+  },
+  {
+    "Class": "AWESOME Sink",
+    "Category": "Special",
+    "Dims": { "X": 16, "Y": 13 },
+    "BeltIn": [{ "Pos": { "X": 3, "Y": 13 } }]
+  },
+  {
+    "Class": "Craft Bench",
+    "Category": "Special",
+    "Dims": { "X": 6, "Y": 3 }
+  },
+  {
+    "Class": "Equipment Workshop",
+    "Category": "Special",
+    "Dims": { "X": 6, "Y": 10 }
+  },
+  {
+    "Class": "Container",
+    "Category": "Organization",
+    "Dims": { "X": 5, "Y": 11 },
+    "BeltIn": [{ "Pos": { "X": 2.5, "Y": 11 } }],
+    "BeltOut": [{ "Pos": { "X": 2.5, "Y": 0 } }]
+  },
+  {
+    "Class": "Industrial Container",
+    "Category": "Organization",
+    "Dims": { "X": 5, "Y": 11 },
+    "BeltIn": [{ "Pos": { "X": 2.5, "Y": 11 } }],
+    "BeltOut": [{ "Pos": { "X": 2.5, "Y": 0 } }]
+  },
+  {
+    "Class": "Fluid Buffer",
+    "Category": "Organization",
+    "Dims": { "X": 6, "Y": 6 },
+    "PipeIn": [{ "Pos": { "X": 3, "Y": 6 } }],
+    "PipeOut": [{ "Pos": { "X": 3, "Y": 0 } }]
+  },
+  {
+    "Class": "Industrial Fluid Buffer",
+    "Category": "Organization",
+    "Dims": { "X": 14, "Y": 14 },
+    "PipeIn": [{ "Pos": { "X": 7, "Y": 14 } }],
+    "PipeOut": [{ "Pos": { "X": 7, "Y": 0 } }]
+  },
+  {
+    "Class": "Dimensional Container",
+    "Category": "Organization",
+    "Dims": { "X": 5, "Y": 11 },
+    "BeltIn": [{ "Pos": { "X": 2.5, "Y": 11 } }]
+  },
+  {
+    "Class": "Lookout Tower",
+    "Category": "Organization",
+    "Dims": { "X": 9, "Y": 9 }
+  },
+  {
+    "Class": "Radio Tower",
+    "Category": "Organization",
+    "Dims": { "X": 10, "Y": 10 }
   },
   {
     "Class": "Merger",
@@ -153,5 +294,90 @@
       { "Pos": { "X": 4, "Y": 2 }, "Rot": 270 }
     ],
     "BeltOut": [{ "Pos": { "X": 2, "Y": 0 } }]
+  },
+  {
+    "Class": "Splitter",
+    "Category": "Logistics",
+    "Dims": { "X": 4, "Y": 4 },
+    "BeltIn": [{ "Pos": { "X": 2, "Y": 4 } }],
+    "BeltOut": [
+      { "Pos": { "X": 2, "Y": 0 } },
+      { "Pos": { "X": 0, "Y": 2 }, "Rot": 270 },
+      { "Pos": { "X": 4, "Y": 2 }, "Rot": 90 }
+    ]
+  },
+  {
+    "Class": "Smart Splitter",
+    "Category": "Logistics",
+    "Dims": { "X": 4, "Y": 4 },
+    "BeltIn": [{ "Pos": { "X": 2, "Y": 4 } }],
+    "BeltOut": [
+      { "Pos": { "X": 2, "Y": 0 } },
+      { "Pos": { "X": 0, "Y": 2 }, "Rot": 270 },
+      { "Pos": { "X": 4, "Y": 2 }, "Rot": 90 }
+    ]
+  },
+  {
+    "Class": "Programmable Splitter",
+    "Category": "Logistics",
+    "Dims": { "X": 4, "Y": 4 },
+    "BeltIn": [{ "Pos": { "X": 2, "Y": 4 } }],
+    "BeltOut": [
+      { "Pos": { "X": 2, "Y": 0 } },
+      { "Pos": { "X": 0, "Y": 2 }, "Rot": 270 },
+      { "Pos": { "X": 4, "Y": 2 }, "Rot": 90 }
+    ]
+  },
+  {
+    "Class": "Belt Output",
+    "Category": "Logistics",
+    "Dims": { "X": 2, "Y": 2 },
+    "BeltOut": [{ "Pos": { "X": 1, "Y": 0 } }]
+  },
+  {
+    "Class": "Belt Input",
+    "Category": "Logistics",
+    "Dims": { "X": 2, "Y": 2 },
+    "BeltIn": [{ "Pos": { "X": 1, "Y": 2 } }]
+  },
+  {
+    "Class": "Pipe Output",
+    "Category": "Logistics",
+    "Dims": { "X": 2, "Y": 2 },
+    "PipeOut": [{ "Pos": { "X": 1, "Y": 0 } }]
+  },
+  {
+    "Class": "Pipe Input",
+    "Category": "Logistics",
+    "Dims": { "X": 2, "Y": 2 },
+    "PipeIn": [{ "Pos": { "X": 1, "Y": 2 } }]
+  },
+  {
+    "Class": "Truck Station",
+    "Category": "Transport",
+    "Dims": { "X": 17, "Y": 14 },
+    "BeltIn": [{ "Pos": { "X": 9, "Y": 14 } }, { "Pos": { "X": 13, "Y": 14 } }],
+    "BeltOut": [{ "Pos": { "X": 5, "Y": 14, "Rot": 180 } }]
+  },
+  {
+    "Class": "Drone Station",
+    "Category": "Transport",
+    "Dims": { "X": 24, "Y": 24 },
+    "BeltIn": [{ "Pos": { "X": 7, "Y": 24 } }, { "Pos": { "X": 19, "Y": 24 } }],
+    "BeltOut": [{ "Pos": { "X": 3, "Y": 24, "Rot": 180 } }]
+  },
+  {
+    "Class": "Freight Platform",
+    "Category": "Transport",
+    "Dims": { "X": 16, "Y": 34 },
+    "BeltIn": [{ "Pos": { "X": 11, "Y": 34 } }],
+    "BeltOut": [{ "Pos": { "X": 5, "Y": 34, "Rot": 180 } }]
+  },
+  {
+    "Class": "Fluid Freight Platform",
+    "Category": "Transport",
+    "Dims": { "X": 16, "Y": 34 },
+    "PipeIn": [{ "Pos": { "X": 11, "Y": 34 } }],
+    "PipeOut": [{ "Pos": { "X": 5, "Y": 34, "Rot": 180 } }]
   }
 ]

@@ -77,26 +77,30 @@ This is more of a **learning & personal** project right now, so **use it at your
 - [x] Undo / redo (may be buggy, hard to reproduce)
 - [x] Move paths by their ends
 - [x] Save and load projects
-- [ ] Complete buildings list for Production / Power / Logistics related buildings
+- [x] Complete buildings list for Production / Power / Logistics related buildings
 - [ ] Scroll bar in side panel
 - [ ] Keybindings displayed somewhere (status bar or popup)
-- [x] Logs/crash reports (logging is mostly done in the console, need to save a log file on crash)
+- [x] Logs/crash reports (log file always written)
 - [x] Free text box tool (text area GUI could use some improvements)
+- [ ] Foundations: add foundations & foundation mode
+- [ ] Selector filter: allows to select / deselect a specific type of object
 
 ### Other goals
 
 A list of features that may or may not happen in the future.
 
 - [ ] Add gifs to README
-- [ ] Foundations: add foundations & foundation mode
-- [ ] Add cache file (window size/pos, last opened projects, recent projects)
+- [x] Add cache file:
+  - [x] window size/pos
+  - [x] last opened projects
+  - [ ] recent projects
 - [ ] Reasonable performances (~30fps and low GPU usage for < 1000 buildings on screen)
   - [ ] Maybe use a render texture for all buildings ?
 - [ ] Make side panels collapsible
+- [ ] Look into [imgui](https://github.com/ocornut/imgui) or [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for GUI
 - [ ] Add / remove to selection
   - [ ] Add / remove single object to selection by ctrl/shift + click
   - [ ] Add / remove rectangle to selection by ctrl/shift + drag
-- [ ] Selector filter: allows to select / deselect a specific type of object
 - [ ] Add train tracks ?
 - [ ] Anchor paths to building inputs / outputs
 - [ ] Porting to app to the web, Rust + [raylib-rs](https://github.com/deltaphc/raylib-rs) + WASM

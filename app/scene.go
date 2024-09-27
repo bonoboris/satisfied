@@ -1,12 +1,6 @@
 package app
 
 import (
-	"bufio"
-	"fmt"
-	"io"
-	"strconv"
-	"strings"
-
 	"github.com/bonoboris/satisfied/log"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -54,6 +48,19 @@ func (s Scene) traceState(key, val string) {
 		}
 		log.Trace("scene", "hovered", s.Hovered)
 	}
+}
+
+// ClearAll clears the scene of all objects, history, ...
+func (s *Scene) ClearAll() {
+	log.Debug("scene.clearAll")
+	s.Buildings = s.Buildings[:0]
+	s.Paths = s.Paths[:0]
+	s.TextBoxes = s.TextBoxes[:0]
+	s.history = s.history[:0]
+	s.historyPos = 0
+	s.savedHistoryPos = 0
+	s.wasModified = false
+	s.Hovered = Object{}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -602,173 +609,4 @@ func (s Scene) Draw() {
 			}
 		}
 	}
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Save / Load
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const (
-	tagVersion   = "#VERSION"
-	textboxClass = "TextBox"
-)
-
-// SaveToText saves the scene into text format.
-//
-// All errors originate from the underlying [io.Writer].
-func (s *Scene) SaveToText(w io.Writer) error {
-	// // bufSize is kind of low estimation of actual size of the save
-	// //   - version line is minimum 10 chars + '\n'
-	// //   - the minimum building line is 7 chars + '\n'
-	// //   - the minimum path line is 10 chars + '\n'
-	// //
-	// // Most of the actual lines will be longer as classes are more than 1 char long
-	// // and numbers will have multiple digits.
-	// bufSize := 10 * (len(s.Paths) + len(s.Buildings) + 1)
-	// br := bufio.NewWriterSize(w, bufSize)
-	br := bufio.NewWriter(w)
-	defer br.Flush()
-	// version
-	_, err := br.WriteString(fmt.Sprintf("%s=%d\n", tagVersion, version))
-	if err != nil {
-		return err
-	}
-	// buildings
-	for _, b := range s.Buildings {
-		_, err := br.WriteString(fmt.Sprintf("%s %v %v %d\n", b.Def().Class, b.Pos.X, b.Pos.Y, b.Rot))
-		if err != nil {
-			return err
-		}
-	}
-	// paths
-	for _, p := range s.Paths {
-		_, err := br.WriteString(fmt.Sprintf("%s %v %v %v %v\n",
-			p.Def().Class, p.Start.X, p.Start.Y, p.End.X, p.End.Y))
-		if err != nil {
-			return err
-		}
-	}
-	// textboxes
-	for _, tb := range s.TextBoxes {
-		_, err := br.WriteString(fmt.Sprintf("%s %v %v %v %v %v\n",
-			textboxClass, tb.Bounds.X, tb.Bounds.Y, tb.Bounds.Width, tb.Bounds.Height,
-			strconv.Quote(tb.Content)))
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-type DecodeTextError struct {
-	Msg     string
-	Err     error
-	Line    int
-	Version int
-}
-
-const (
-	msgEmpty                = "empty file"
-	msgInvalidVersionLine   = "invalid first line, expected '#VERSION=x'"
-	msgInvalidVersionNumber = "invalid version, expected a positive integer"
-	msgVersionTooHigh       = "version is too high"
-	msgInvalidPath          = "invalid path line expected '[class] [startX] [startY] [endX] [endY]'"
-	msgInvalidBuilding      = "invalid building line expected '[class] [posX] [posY] [rotation]'"
-	msgInvalidTextBox       = "invalid textbox line expected '[class] [posX] [posY] [width] [height] [content]'"
-	msgInvalidClass         = "unknown class"
-)
-
-func (e DecodeTextError) Error() string {
-	if e.Err != nil {
-		return fmt.Sprintf("line %d: %s (%s)", e.Line, e.Msg, e.Err.Error())
-	}
-	return fmt.Sprintf("line %d: %s", e.Line, e.Msg)
-}
-
-func (s *Scene) LoadFromText(r io.Reader) error {
-	scanner := bufio.NewScanner(r)
-	scanner.Scan()
-	line := scanner.Text()
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-	if len(line) == 0 {
-		return DecodeTextError{Msg: msgEmpty}
-	}
-	// parse version
-	var ver int
-	if _, err := fmt.Sscanf(string(line), tagVersion+"=%d", &ver); err != nil {
-		return DecodeTextError{Msg: msgInvalidVersionLine, Line: 1, Err: err}
-	}
-	if ver < 0 {
-		return DecodeTextError{Msg: msgInvalidVersionNumber, Line: 1}
-	}
-	// call version specific function
-	switch ver {
-	case 0:
-		return s.decodeText(scanner, ver)
-	default:
-		return DecodeTextError{Msg: msgVersionTooHigh, Version: ver, Line: 1}
-	}
-}
-
-func (s *Scene) decodeText(scanner *bufio.Scanner, ver int) error {
-	no := 2
-	var (
-		p Path
-		b Building
-	)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if len(line) == 0 {
-			continue
-		}
-		class, fields, _ := strings.Cut(line, " ")
-		if class == textboxClass {
-			var tb TextBox
-			var err error
-			elts := strings.SplitN(fields, " ", 5)
-			if len(elts) != 5 {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Version: ver}
-			}
-			tb.Bounds.X, err = ParseFloat32(elts[0])
-			if err != nil {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Err: err, Version: ver}
-			}
-			tb.Bounds.Y, err = ParseFloat32(elts[1])
-			if err != nil {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Err: err, Version: ver}
-			}
-			tb.Bounds.Width, err = ParseFloat32(elts[2])
-			if err != nil {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Err: err, Version: ver}
-			}
-			tb.Bounds.Height, err = ParseFloat32(elts[3])
-			if err != nil {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Err: err, Version: ver}
-			}
-			tb.Content, err = strconv.Unquote(elts[4])
-			if err != nil {
-				return DecodeTextError{Msg: msgInvalidTextBox, Line: no, Err: err, Version: ver}
-			}
-			s.TextBoxes = append(s.TextBoxes, tb)
-		} else if defIdx := pathDefs.Index(string(class)); defIdx >= 0 {
-			p.DefIdx = defIdx
-			if _, err := fmt.Sscanf(fields, "%f %f %f %f", &p.Start.X, &p.Start.Y, &p.End.X, &p.End.Y); err != nil {
-				return DecodeTextError{Msg: msgInvalidPath, Line: no, Err: err, Version: ver}
-			}
-			s.Paths = append(s.Paths, p)
-		} else if defIdx := buildingDefs.Index(string(class)); defIdx >= 0 {
-			b.DefIdx = defIdx
-			if _, err := fmt.Sscanf(fields, "%f %f %d", &b.Pos.X, &b.Pos.Y, &b.Rot); err != nil {
-				return DecodeTextError{Msg: msgInvalidBuilding, Line: no, Err: err, Version: ver}
-			}
-			s.Buildings = append(s.Buildings, b)
-		} else {
-			return DecodeTextError{Msg: msgInvalidClass, Line: no, Version: ver}
-		}
-		no++
-	}
-
-	return nil
 }
